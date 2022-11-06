@@ -1,11 +1,9 @@
-from config import TOKEN
 import cv2
 import mss
 import numpy as np
 import time
 import json
 
-##
 
 sct = mss.mss()
 last_time = time.time()
