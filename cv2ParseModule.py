@@ -1,12 +1,17 @@
+import datetime
+
 import cv2
 import mss
 import numpy as np
 import time
 import json
+import os
 
 
 sct = mss.mss()
 last_time = time.time()
+
+path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'object_create.jpg')
 
 with open('mouse_poss\mouse_poss.json') as file:
     parse_area = json.load(file)
@@ -32,8 +37,15 @@ while True:
     if hasRed > 0:
         print("ENEMY IN THE HOME")
         time.sleep(1)
+        sct.shot(output=f'object_create.jpg')
         pass
     else:
+
+        try:
+            os.remove(path)
+        except FileNotFoundError as EX:
+            print(EX)
+
         print("RED NOT detected!")
         time.sleep(0.3)
         print("New search...")
