@@ -6,7 +6,6 @@ import datetime
 import os
 import json
 import requests
-import glob
 import random
 
 
