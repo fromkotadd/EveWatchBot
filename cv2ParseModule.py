@@ -21,8 +21,8 @@ def cv2ParseModule():
         img = np.asarray(sct.grab(parse_area))
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-        lower_red = np.array([281, 90, 46])  # диапазон цвета HSV
-        upper_red = np.array([328, 90, 46])
+        lower_red = np.array([0, 50, 50])  # диапазон цвета HSV
+        upper_red = np.array([10, 255, 255])
         mask0 = cv2.inRange(hsv, lower_red, upper_red)
 
         lower_red = np.array([170, 50, 50])
@@ -32,13 +32,14 @@ def cv2ParseModule():
         mask = mask0 + mask1
 
         hasRed = np.sum(mask)
-        if hasRed > 0:
+        # cv2.imshow("window_name", mask)
+        # cv2.waitKey(0)
+        if hasRed > 10:
             print("ENEMY IN THE HOME")
             sct.shot(output=f'object_create.jpg')
             time.sleep(3)
             pass
         else:
-
             try:
                 os.remove(path)
             except (FileNotFoundError, PermissionError):
