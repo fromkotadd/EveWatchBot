@@ -1,3 +1,5 @@
+import asyncio
+
 import config
 import discord
 from discord.ext import commands
@@ -5,7 +7,6 @@ import datetime
 import cv2
 import mss
 import numpy as np
-import time
 import json
 
 intents = discord.Intents.all()
@@ -64,10 +65,11 @@ async def on_ready():
             emned.set_image(url=f"attachment://object_create.jpg")
             print('screen download to chanel')
             await channel.send(file=file, embed=emned)
-            time.sleep(10)
+            await asyncio.sleep(TIMEOUT)
 
         else:
             print('continue')
+            await asyncio.sleep(TIMEOUT)
             continue
 
 bot.run(config.TOKEN)
