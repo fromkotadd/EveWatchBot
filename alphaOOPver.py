@@ -1,5 +1,4 @@
 import asyncio
-
 import config
 import discord
 from discord.ext import commands
@@ -13,13 +12,12 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents) #инициализируем бота с префиксом '!'
 TIMEOUT = 10
 ID_CHANNEL = 975788405004832770
-
+sct = mss.mss()
 with open('mouse_poss\mouse_poss.json') as file:
     parse_area = json.load(file)
-def cv2ParseModule(parse_area):
-    sct = mss.mss()
 
-    # while True:
+def cv2ParseModule(parse_area, sct):
+
 
     img = np.asarray(sct.grab(parse_area))
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -41,14 +39,12 @@ def cv2ParseModule(parse_area):
         rect = cv2.minAreaRect(cnt)  # пытаемся вписать прямоугольник
         area = int(rect[1][0] * rect[1][1])  # вычисление площади
 
-        if area > 500:
-            print(area)
+        if 700 > area > 500:
             print("ENEMY IN THE HOME")
             return True
         else:
             print("RED NOT detected!")
             print("New search...")
-    print('False -------')
     return False
 
 
@@ -57,7 +53,7 @@ async def on_ready():
     channel = bot.get_channel(ID_CHANNEL)
 
     while True:
-        if  cv2ParseModule(parse_area):
+        if  cv2ParseModule(parse_area, sct):
             time_now = datetime.datetime.today().strftime("%H:%M:%S")
             mss.mss().shot(output=f'object_create.jpg')
             file = discord.File(f'C:\pythonProject\EveWatchBot\object_create.jpg', filename=f'object_create.jpg')
@@ -68,7 +64,7 @@ async def on_ready():
             await asyncio.sleep(TIMEOUT)
 
         else:
-            print('continue')
+            print('Continue')
             await asyncio.sleep(TIMEOUT)
             continue
 
