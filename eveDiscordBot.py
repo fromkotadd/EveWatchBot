@@ -4,16 +4,9 @@ import discord
 from discord.ext import commands
 import datetime
 import os
-import json
-import requests
-import random
-
-
-
 
 
 intents = discord.Intents.all()
-# intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents) #инициализируем бота с префиксом '!'
 TIMEOUT = 30
 ID_CHANNEL = 975788405004832770
@@ -36,7 +29,6 @@ async def on_ready():
         except (FileNotFoundError, discord.errors.HTTPException) as EX:
             print(EX)
             continue
-
         await asyncio.sleep(TIMEOUT)
 
 bot.run(config.TOKEN)
