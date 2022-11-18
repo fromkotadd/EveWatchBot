@@ -10,12 +10,15 @@ import json
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents) #инициализируем бота с префиксом '!'
-TIMEOUT = 10
-ID_CHANNEL = 975788405004832770
+TIMEOUT = 15
+ID_CHANNEL = 1043187228760879124
 sct = mss.mss()
+
 with open('mouse_poss\mouse_poss.json') as file:
     parse_area = json.load(file)
 
+def time():
+    return datetime.datetime.today().strftime("%H:%M:%S")
 def cv2ParseModule(parse_area, sct):
 
 
@@ -43,9 +46,10 @@ def cv2ParseModule(parse_area, sct):
             print("ENEMY IN THE HOME")
             return True
         else:
-            print("RED NOT detected!")
-            print("New search...")
+            print("RED NOT detected!\nNew search...")
+    print("RED NOT detected!\nNew search...")
     return False
+
 
 
 @bot.event
@@ -54,19 +58,17 @@ async def on_ready():
 
     while True:
         if  cv2ParseModule(parse_area, sct):
-            time_now = datetime.datetime.today().strftime("%H:%M:%S")
-            mss.mss().shot(output=f'object_create.jpg')
+            sct.shot(output=f'object_create.jpg')
             file = discord.File(f'C:\pythonProject\EveWatchBot\object_create.jpg', filename=f'object_create.jpg')
-            emned = discord.Embed(color=0xff9900, title=f'time: {time_now}')
+            emned = discord.Embed(color=0xff9900, title=f'time: {time()}')
             emned.set_image(url=f"attachment://object_create.jpg")
-            print('screen download to chanel')
+            print('Screen download to chanel')
             await channel.send(file=file, embed=emned)
             await asyncio.sleep(TIMEOUT)
 
         else:
-            print('Continue')
-            await asyncio.sleep(TIMEOUT)
-            continue
+            print(f'Continue\t{time()}')
+            await asyncio.sleep(1)
 
 bot.run(config.TOKEN)
 
