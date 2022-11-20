@@ -1,4 +1,7 @@
 import asyncio
+
+import pytesseract
+
 import config
 import discord
 from discord.ext import commands
@@ -10,19 +13,24 @@ import json
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents) #инициализируем бота с префиксом '!'
-TIMEOUT = 15
-ID_CHANNEL = 1043187228760879124
-sct = mss.mss()
+# TIMEOUT = 5
+ID_CHANNEL = 1043936080224854089
 
-with open('mouse_poss\mouse_poss.json') as file:
-    parse_area = json.load(file)
+pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
+
+with open('mouse_poss\mause_poss_for_local_parser.json') as file_0, open('mouse_poss\mause_poss_for_greed_parser.json') as file_1:
+    """load pars area coordinates"""
+    parse_area_color_triggerJSON = json.load(file_0)
+    parse_greed_triggerJSON = json.load(file_1)
+
+
 
 def time():
     return datetime.datetime.today().strftime("%H:%M:%S")
-def cv2ParseModule(parse_area, sct):
 
 
-    img = np.asarray(sct.grab(parse_area))
+def color_trigger(parse_area):
+    img = np.asarray(mss.mss().grab(parse_area))
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     lower_red = np.array([0, 50, 50])  # диапазон цвета HSV
@@ -43,35 +51,55 @@ def cv2ParseModule(parse_area, sct):
         area = int(rect[1][0] * rect[1][1])  # вычисление площади
 
         if 700 > area > 500:
-            print("ENEMY IN THE HOME")
             return True
         else:
-            print("RED NOT detected!\nNew search...")
-    print("RED NOT detected!\nNew search...")
+            pass
+
     return False
 
+def greed_trigger(parse_area):
+
+    img = np.asarray(mss.mss().grab(parse_area))
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    pars_string = pytesseract.image_to_string(hsv)
+    if pars_string:
+        print(pars_string)
+        return pars_string
+    else:
+        return False
 
 
-@bot.event
-async def on_ready():
-    channel = bot.get_channel(ID_CHANNEL)
+def sentry_bot(search_technology, parse_greed_trigger, TIMEOUT=5):
+    @bot.event
+    async def on_ready():
+        channel = bot.get_channel(ID_CHANNEL)
+        control = ''
+        while True:
+            result = search_technology(parse_greed_trigger)
+            if result == control:
+                await asyncio.sleep(5)
+                continue
+            elif result != control and result != True or False:
+                control = result
+            if result:
+                mss.mss().shot(output=f'object_create.jpg')
+                file = discord.File(f'C:\pythonProject\EveWatchBot\object_create.jpg', filename=f'object_create.jpg')
+                emned = discord.Embed(color=0xff9900, title=f'time: {time()}')
+                emned.set_image(url=f"attachment://object_create.jpg")
+                print('Screen download to chanel')
+                await channel.send(file=file, embed=emned)
+                await asyncio.sleep(TIMEOUT)
 
-    while True:
-        if  cv2ParseModule(parse_area, sct):
-            sct.shot(output=f'object_create.jpg')
-            file = discord.File(f'C:\pythonProject\EveWatchBot\object_create.jpg', filename=f'object_create.jpg')
-            emned = discord.Embed(color=0xff9900, title=f'time: {time()}')
-            emned.set_image(url=f"attachment://object_create.jpg")
-            print('Screen download to chanel')
-            await channel.send(file=file, embed=emned)
-            await asyncio.sleep(TIMEOUT)
-
-        else:
-            print(f'Continue\t{time()}')
-            await asyncio.sleep(1)
-
-bot.run(config.TOKEN)
+            else:
+                print(f'Continue\t{time()}')
+                await asyncio.sleep(1)
 
 
 
 
+
+if __name__ == '__main__':
+    # sentry_bot(color_trigger, parse_area_color_triggerJSON, TIMEOUT=10)
+    sentry_bot(greed_trigger, parse_greed_triggerJSON, TIMEOUT=10)
+    bot.run(config.TOKEN)
