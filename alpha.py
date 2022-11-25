@@ -14,7 +14,7 @@ import json
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents) #инициализируем бота с префиксом '!'
 # TIMEOUT = 5
-ID_CHANNEL = 1043936080224854089
+ID_CHANNEL = 1045631088577486898
 
 pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
@@ -74,17 +74,11 @@ def sentry_bot(search_technology, parse_greed_trigger, TIMEOUT=5):
     @bot.event
     async def on_ready():
         channel = bot.get_channel(ID_CHANNEL)
-        control = ''
+        # control = ''
         while True:
-            result = search_technology(parse_greed_trigger)
-            if result == control:
-                await asyncio.sleep(5)
-                continue
-            elif result != control and result != True or False:
-                control = result
-            if result:
+            if search_technology(parse_greed_trigger):
                 mss.mss().shot(output=f'object_create.jpg')
-                file = discord.File(f'C:\pythonProject\EveWatchBot\object_create.jpg', filename=f'object_create.jpg')
+                file = discord.File(f'C:\PycharmProjects\EveWatchBot\object_create.jpg', filename=f'object_create.jpg')
                 emned = discord.Embed(color=0xff9900, title=f'time: {time()}')
                 emned.set_image(url=f"attachment://object_create.jpg")
                 print('Screen download to chanel')
