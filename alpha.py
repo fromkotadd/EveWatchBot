@@ -63,7 +63,7 @@ def greed_trigger(parse_area):
 
     pars_string = pytesseract.image_to_string(hsv)
     if pars_string:
-        print(pars_string)
+        # print(pars_string)
         return pars_string
     else:
         return False
@@ -73,7 +73,6 @@ def sentry_bot(search_technology, parse_greed_trigger, TIMEOUT=5):
     @bot.event
     async def on_ready():
         channel = bot.get_channel(ID_CHANNEL)
-        # control = ''
         while True:
             if search_technology(parse_greed_trigger):
                 mss.mss().shot(output=f'object_create.jpg')
