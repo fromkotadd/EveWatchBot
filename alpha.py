@@ -13,7 +13,6 @@ import json
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents) #инициализируем бота с префиксом '!'
-# TIMEOUT = 5
 ID_CHANNEL = 1045631088577486898
 
 pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
