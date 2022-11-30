@@ -9,7 +9,12 @@ import os
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents) #инициализируем бота с префиксом '!'
 TIMEOUT = 30
-ID_CHANNEL = 975788405004832770
+ID_CHANNEL = 1043936080224854089
+@bot.command()
+async def test(ctx):
+	author = discord.Member.id
+	await ctx.send(f'Hello, {author}!')
+
 
 @bot.event
 async def on_ready():
