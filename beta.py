@@ -13,7 +13,7 @@ import re
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)  # инициализируем бота с префиксом '!'
 ID_CHANNEL = config['ID_CHANNEL']
-pattern_1 = r'[(\[{\|]'r'\w{2,4}'r'[)\]}\|]'  # for find corp tag
+
 pytesseract.pytesseract.tesseract_cmd = config['PATH_PYTESSERACT']
 TIMEOUTH = config['TIMEOUTH']
 
@@ -36,12 +36,15 @@ def grid_trigger(parse_area):
 
     pars_string = pytesseract.image_to_string(hsv)
     # print(len(pars_string))
-    if pars_string != '':
+    pattern_1 = r'[(\[{\|]'r'\w{2,4}'r'[)\]}\|]'  # for find corp tag
+    if pars_string:
         for word in pars_string.replace('\n', ' ').split(' '):
             print(word)
             if re.search(pattern_1, word):
                 teg = re.search(pattern_1, word).group()[1:-1]
-                if teg not in white_list:
+                print(teg)
+                if teg.upper() not in white_list:
+                    print(f'enemy teg - {teg.upper()}')
                     return True
         if not re.search(pattern_1, pars_string):
             return True
@@ -55,9 +58,10 @@ def sentry_bot(search_technology, parse_greed_trigger, TIMEOUT=5):
     async def on_ready():
         channel = bot.get_channel(ID_CHANNEL)
         while True:
-            if search_technology(parse_greed_trigger):
+            result = search_technology(parse_greed_trigger)
+            if result:
                 mss.mss().shot(output=f'object_create.jpg')
-                file = discord.File(f'C:/pythonProject/EveWatchBot/object_create.jpg', filename=f'object_create.jpg')
+                file = discord.File(f'C:/PycharmProjects/EveWatchBot/object_create.jpg', filename=f'object_create.jpg')
                 emned = discord.Embed(color=0xff9900, title=f'time: {time()}')
                 emned.set_image(url=f"attachment://object_create.jpg")
                 print('Screen download to chanel')
