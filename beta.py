@@ -39,10 +39,10 @@ def grid_trigger(parse_area):
     pattern_1 = r'[(\[{\|]'r'\w{2,4}'r'[)\]}\|]'  # for find corp tag
     if pars_string:
         for word in pars_string.replace('\n', ' ').split(' '):
-            print(word)
+            print(f'word - {word}')
             if re.search(pattern_1, word):
                 teg = re.search(pattern_1, word).group()[1:-1]
-                print(teg)
+                print(f'teg - {teg}')
                 if teg.upper() not in white_list:
                     print(f'enemy teg - {teg.upper()}')
                     return True
@@ -61,7 +61,7 @@ def sentry_bot(search_technology, parse_greed_trigger, TIMEOUT=5):
             result = search_technology(parse_greed_trigger)
             if result:
                 mss.mss().shot(output=f'object_create.jpg')
-                file = discord.File(f'C:/PycharmProjects/EveWatchBot/object_create.jpg', filename=f'object_create.jpg')
+                file = discord.File(f'C:/pythonProject/EveWatchBot/object_create.jpg', filename=f'object_create.jpg')
                 emned = discord.Embed(color=0xff9900, title=f'time: {time()}')
                 emned.set_image(url=f"attachment://object_create.jpg")
                 print('Screen download to chanel')
