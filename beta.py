@@ -28,6 +28,27 @@ def time():
     return datetime.datetime.today().strftime("%H:%M:%S")
 
 
+@bot.command()
+async def helps(ctx):
+    embed = discord.Embed(color=0x008000, title='command list \n!help - command list \n!screen - return local screen')  # создаёт embed
+    await ctx.send(embed=embed)  # отправляет embed
+
+
+
+@bot.command()
+async def screen(ctx):
+    # channel = bot.get_channel(ID_CHANNEL)
+    # await ctx.send(f'ID канала: {ctx.channel}')
+    channel = ctx.channel
+    mss.mss().shot(output=f'screen.jpg')
+    file = discord.File(f'C:/pythonProject/EveWatchBot/screen.jpg', filename=f'screen.jpg')
+    emned = discord.Embed(color=0xff9900, title=f'time: {time()}')
+    emned.set_image(url=f"attachment://screen.jpg")
+    print('Screen download to chanel')
+    await channel.send(file=file, embed=emned)
+
+
+
 def grid_trigger(parse_area):
     """ parsing text to search for a tag"""
 
@@ -74,5 +95,5 @@ def sentry_bot(search_technology, parse_greed_trigger, TIMEOUT=5):
 
 
 if __name__ == '__main__':
-    sentry_bot(grid_trigger, parse_grid_triggerJSON, TIMEOUT=TIMEOUTH)
+    # sentry_bot(grid_trigger, parse_grid_triggerJSON, TIMEOUT=TIMEOUTH)
     bot.run(config['TOKEN'])
